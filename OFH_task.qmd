@@ -421,7 +421,7 @@ wave_timings <- tribble(
   3,     "clinic 2", 25,          "NPL", 21,        29,
   4,     "clinic 1", 20,          "DT",  32,        39,
   4,     "clinic 2", 15,          "NPL", 30,        37,
-  5,     "clinic 1", 7.5,         "DT",  41,        47,
+  5,     "clinic 1", 7.5,         "NPL",  41,        47,
   5,     "clinic 2", 20,          "NPL", 38,        45,
 )
 
@@ -454,7 +454,7 @@ wave_table <- wave_timings |>
     locations = list(cells_column_labels(), cells_stubhead(), cells_column_spanners())
   ) |>
   tab_style(
-    style     = cell_text(font = "Progress Medium", align = "left"),
+    style     = cell_text(align = "left"),
     locations = cells_title(groups = "title")
   ) |>
   tab_style(
@@ -528,7 +528,7 @@ total_bookings |> daily_bookings_graph()
 total_bookings |> cumul_bookings_graph()
 ```
 
-### NPL vs DT 
+## NPL vs DT 
 I've assumed the two clinics serve distinct but similar populations. I assumed that each clinic did not have overlap in the mailout reach or sign ups from each clinic. 
 
 As a result, I decided to do first mailing for clinic 2 with 5000 DT mailings which would give information on conversion rate and time-to-booking to decide waves for clinic 1 for the rest of the scenario.
@@ -540,21 +540,21 @@ I checked if the clinics could be filled with the assumed conversion rate, and t
 This led to clinic 1 having 40,000 mailings for NPL and DT, while clinic 2 had 90,000 NPL mailings and 5,000 DT mailings. Based in the assumed conversion rate midpoint, **clinic 1** would have **2200±600 people**, while **clinic 2** would have **2187.5±715**. 
 
 
-### Number of bookings and conversion rate
+## Number of bookings and conversion rate
 I've projected the number of bookings per wave based on the provided conversion rates. In practice I would update this using a Bayesian approach specific to each clinic and mailing route, updating in response to new information from each wave.
 
-### Time-to-booking
+## Time-to-booking
 I've made assumptions around the time it takes people to respond to mailings and book their appointment, using  Weibull distribution curves to determine daily booking volumes. The shape and steepness was chosen so that DT would give a quicker response (under the assumption that communications from GP surgeries carry more weight). The actual shape and slope of the curve is guess work on my part, I assumed most people would book within 5 days for DT and 8 for NPL. 
 
-### Timing of waves
+## Timing of waves
 I've used the plateau point of 80% of predicted bookings on the time-to-book curve to predict the send out date of each successive wave. The exception here is for wave 2, 
 
-### Readjusting the plan
+## Readjusting the plan
 I don't think this current plan would work that well without readjustment. Especially since the width of the estimates are relatively wide.
 
 I'd track conversion rates for each clinic and mailing method using a Bayesian approach, weighting recent data more heavily if rates appear to be shifting. These updated estimates feed into a predicted plateau for each wave. By fitting a new Weibull curve and reading off the asymptote, we can anticipate the final booking count and shift subsequent delivery dates earlier or later accordingly. We may need to define the plateau conservatively given the lag between booking and send, but having 5 waves should give us enough runway to absorb that uncertainty.
 
-### Other assumptions
+## Other assumptions
 
 - Targetting of particular demographics has been ignored. If it was, I'd use a random effects model taking in a range of demographic factors, probably from census data. 
 - The effect of mailing out too early on conversion and time-to-booking has been ignored. In practice I'd try to glean this from past data, maybe with an initial regression model with a number of different factors. Then swap that out for a Bayesian approach once mailings have begun. 
