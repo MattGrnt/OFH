@@ -15,7 +15,6 @@ format:
         
   typst:
     font-paths: ["C:/WINDOWS/Fonts"]
-    toc: false
     papersize: a4
 execute:
   warning: false
@@ -111,9 +110,6 @@ C1_mailings <- C1_mailings |>
 # sum(C1_mailings$lowcapFilled)
 # sum(C2_mailings$lowcapFilled)
 
-
-
-
 ```
 
 ```{r wave_1}
@@ -168,6 +164,7 @@ wave1_booking_curve <- w1_sends |>
     ),
     .by = clinic
   )
+# wave1_booking_curve |> filter(proportion > .80 & proportion < .81)
 
 # wave1_booking_curve |> daily_bookings_graph()
 
@@ -178,8 +175,8 @@ wave1_booking_curve <- w1_sends |>
 #| code-summary: wave 2 code
 w2_sends <- tibble(
   clinic    = c("clinic 1", "clinic 2"),
-  mailing_type = c("DT", "NPL"),
-  send_day  = c(17, 12),
+  mailing_type = c("NPL", "NPL"),
+  send_day  = c(17, 9),
   mailing_size = c(20000, 25000),
   conversion_rate = c(C1_mailings |> filter(type == "DT") |> pull(convMid), 
                       C2_mailings |> filter(type == "NPL") |> pull(convMid)),
@@ -219,6 +216,7 @@ wave2_booking_curve <- w2_sends |>
     ),
     .by = clinic
   )
+# wave2_booking_curve |> filter(proportion > .80 & proportion < .81)
 
 # wave2_booking_curve |> daily_bookings_graph()
 
@@ -230,8 +228,8 @@ wave2_booking_curve <- w2_sends |>
 
 w3_sends <- tibble(
   clinic    = c("clinic 1", "clinic 2"),
-  mailing_type = c("NPL", "NPL"),
-  send_day  = c(23, 21),
+  mailing_type = c("DT", "NPL"),
+  send_day  = c(26, 17),
   mailing_size = c(20000, 25000),
   conversion_rate = c(C1_mailings |> filter(type == "NPL") |> pull(convMid), 
                       C2_mailings |> filter(type == "NPL") |> pull(convMid)),
@@ -271,6 +269,7 @@ wave3_booking_curve <- w3_sends |>
     ),
     .by = clinic
   )
+# wave3_booking_curve |> filter(proportion > .80 & proportion < .81)
 
 # wave3_booking_curve |>
 #   daily_bookings_graph()
@@ -284,7 +283,7 @@ wave3_booking_curve <- w3_sends |>
 w4_sends <- tibble(
   clinic    = c("clinic 1", "clinic 2"),
   mailing_type = c("NPL", "NPL"),
-  send_day  = c(31, 29),
+  send_day  = c(32, 26),
   mailing_size = c(15000, 15000),
   conversion_rate = c(C1_mailings |> filter(type == "DT") |> pull(convMid), 
                       C2_mailings |> filter(type == "NPL") |> pull(convMid)),
@@ -324,6 +323,7 @@ wave4_booking_curve <- w4_sends |>
     ),
     .by = clinic
   )
+# wave4_booking_curve |> filter(proportion > .80 & proportion < .81)
 
 # wave4_booking_curve |>
 #   ggplot(aes(x = day, y = daily_bookings, colour = clinic)) +
@@ -349,7 +349,7 @@ wave4_booking_curve <- w4_sends |>
 w5_sends <- tibble(
   clinic    = c("clinic 1", "clinic 2"),
   mailing_type = c("NPL", "NPL"),
-  send_day  = c(41, 37),
+  send_day  = c(41, 35),
   mailing_size = c(7500, 20000),
   conversion_rate = c(C1_mailings |> filter(type == "DT") |> pull(convMid), 
                       C2_mailings |> filter(type == "NPL") |> pull(convMid)),
@@ -390,6 +390,8 @@ wave5_booking_curve <- w5_sends |>
     .by = clinic
   )
 
+# wave5_booking_curve |> filter(proportion > .80 & proportion < .81)
+
 # wave5_booking_curve |>
 #   ggplot(aes(x = day, y = daily_bookings, colour = clinic)) +
 #   geom_line() +
@@ -412,17 +414,17 @@ wave5_booking_curve <- w5_sends |>
 ```{r table}
 #| code-summary: table code
 wave_timings <- tribble(
-  ~wave, ~clinic,    ~capacity_k, ~type, ~sent_day, ~plateau_80_day,
-  1,     "clinic 1", 10,          "NPL", 8,         16,
-  1,     "clinic 2", 5,           "DT",  3,         8,
-  2,     "clinic 1", 20,          "NPL", 17,        22,
-  2,     "clinic 2", 25,          "DT",  12,        20,
-  3,     "clinic 1", 20,          "NPL", 23,        31,
-  3,     "clinic 2", 25,          "NPL", 21,        29,
-  4,     "clinic 1", 20,          "DT",  32,        39,
-  4,     "clinic 2", 15,          "NPL", 30,        37,
-  5,     "clinic 1", 7.5,         "NPL",  41,        47,
-  5,     "clinic 2", 20,          "NPL", 38,        45,
+  ~wave, ~clinic,    ~capacity_k, ~target,  ~type, ~sent_day, ~plateau_80_day,
+  1,     "clinic 1", 10,          225,     "NPL",  8,         16,
+  1,     "clinic 2", 5,           163,     "DT",   3,         8,
+  2,     "clinic 1", 20,          650,     "NPL",  17,        25,
+  2,     "clinic 2", 25,          563,     "NPL",  9,         17,
+  3,     "clinic 1", 20,          450,     "DT",   26,        31,
+  3,     "clinic 2", 25,          563,     "NPL",  17,        25,
+  4,     "clinic 1", 20,          488,     "DT",   32,        40,
+  4,     "clinic 2", 15,          338,     "NPL",  26,        34,
+  5,     "clinic 1", 7.5,         244,     "NPL",   41,        49,
+  5,     "clinic 2", 20,          450,     "NPL",  35,        43,
 )
 
 library(gt)
@@ -432,6 +434,7 @@ wave_table <- wave_timings |>
   cols_label(
     clinic         = md("**Clinic**"),
     capacity_k     = md("**Capacity (k)**"),
+    target         = md("**Target**"),
     type           = md("**Type**"),
     sent_day       = md("**Letters sent (day)**"),
     plateau_80_day = md("**80% plateau (day)**")
@@ -454,7 +457,7 @@ wave_table <- wave_timings |>
     locations = list(cells_column_labels(), cells_stubhead(), cells_column_spanners())
   ) |>
   tab_style(
-    style     = cell_text(align = "left"),
+    style     = cell_text(font = "Progress Medium", align = "left"),
     locations = cells_title(groups = "title")
   ) |>
   tab_style(
@@ -482,7 +485,6 @@ wave_table <- wave_timings |>
   )
 ```
 
-
 ```{r plan_graphs}
 #| code-summary: total booking data
 #combine waves
@@ -501,14 +503,14 @@ total_bookings <- rbind(wave1_booking_curve,
 
 
 # total_bookings |> daily_bookings_graph()
-# 
+
 # total_bookings |> cumul_bookings_graph()
 
 ```
 
 # General approach
 
-5 waves of mailings, with the fifth wave taking place during the first week of clinics opening. 
+5 waves of mailings, with the fifth wave taking place during the first week of clinics opening.
 
 ```{r}
 #| code-fold: false
@@ -516,21 +518,20 @@ total_bookings <- rbind(wave1_booking_curve,
 wave_table
 ```
 
-
 ```{r}
 #| layout-ncol: 2
 #| lightbox: true
 #| code-fold: false
 #| echo: false
-#| column: screen-inset-shaded
 
 total_bookings |> daily_bookings_graph()
 
 total_bookings |> cumul_bookings_graph()
 ```
 
-## NPL vs DT 
-I've assumed the two clinics serve distinct but similar populations. I assumed that each clinic did not have overlap in the mailout reach or sign ups from each clinic. 
+### NPL vs DT
+
+I've assumed the two clinics serve distinct but similar populations. I assumed that each clinic did not have overlap in the mailout reach or sign ups from each clinic.
 
 As a result, I decided to do first mailing for clinic 2 with 5000 DT mailings which would give information on conversion rate and time-to-booking to decide waves for clinic 1 for the rest of the scenario.
 
@@ -538,30 +539,37 @@ After that, I looked to balance the number of sign ups for each clinic based on 
 
 I checked if the clinics could be filled with the assumed conversion rate, and then balanced the number of NPL mailings across the two clinics so both could reach a full capacity.
 
-This led to clinic 1 having 40,000 mailings for NPL and DT, while clinic 2 had 90,000 NPL mailings and 5,000 DT mailings. Based in the assumed conversion rate midpoint, **clinic 1** would have **2200±600 people**, while **clinic 2** would have **2187.5±715**. 
+This led to clinic 1 having 40,000 mailings for NPL and DT, while clinic 2 had 90,000 NPL mailings and 5,000 DT mailings. Based in the assumed conversion rate midpoint, **clinic 1** would have **2200±600 people**, while **clinic 2** would have **2187.5±715**.
 
+### Number of bookings and conversion rate
 
-## Number of bookings and conversion rate
 I've projected the number of bookings per wave based on the provided conversion rates. In practice I would update this using a Bayesian approach specific to each clinic and mailing route, updating in response to new information from each wave.
 
-## Time-to-booking
-I've made assumptions around the time it takes people to respond to mailings and book their appointment, using  Weibull distribution curves to determine daily booking volumes. The shape and steepness was chosen so that DT would give a quicker response (under the assumption that communications from GP surgeries carry more weight). The actual shape and slope of the curve is guess work on my part, I assumed most people would book within 5 days for DT and 8 for NPL. 
+### Time-to-booking
 
-## Timing of waves
-I've used the plateau point of 80% of predicted bookings on the time-to-book curve to predict the send out date of each successive wave. The exception here is for wave 2, 
+I've made assumptions around the time it takes people to respond to mailings and book their appointment, using Weibull distribution curves to determine daily booking volumes. The shape and steepness was chosen so that DT would give a quicker response (under the assumption that communications from GP surgeries carry more weight). The actual shape and slope of the curve is guess work on my part, I assumed most people would book within 5 days for DT and 8 for NPL.
 
-## Readjusting the plan
+### Timing of waves
+
+I've used the plateau point of 80% of predicted bookings on the time-to-book curve to predict the send out date of each successive wave. The first DT wave of mailings for clinic 1 was placed in wave 3 to help ensure enough information would have come through from the test wave of DT at clinic 2.
+
+### Readjusting the plan
+
 I don't think this current plan would work that well without readjustment. Especially since the width of the estimates are relatively wide.
 
 I'd track conversion rates for each clinic and mailing method using a Bayesian approach, weighting recent data more heavily if rates appear to be shifting. These updated estimates feed into a predicted plateau for each wave. By fitting a new Weibull curve and reading off the asymptote, we can anticipate the final booking count and shift subsequent delivery dates earlier or later accordingly. We may need to define the plateau conservatively given the lag between booking and send, but having 5 waves should give us enough runway to absorb that uncertainty.
 
-## Other assumptions
+### Other assumptions
 
-- Targetting of particular demographics has been ignored. If it was, I'd use a random effects model taking in a range of demographic factors, probably from census data. 
-- The effect of mailing out too early on conversion and time-to-booking has been ignored. In practice I'd try to glean this from past data, maybe with an initial regression model with a number of different factors. Then swap that out for a Bayesian approach once mailings have begun. 
-- Budgetary constraints are not a main consideration. I assumed that the cost of mailouts was less that the cost of an empty booking spot. If we needed to balance this I'd look at a newspaper vendor model to decide how to balance costs of empty vs filled spots and how much spend is necessary to fill a spot.
-- No repeat mailings. I haven't included the effect of repeat mailings without any data on the potential increase in conversion rates. 
+-   **Targetting of particular demographics** has been ignored. If it was, I'd use a random effects model taking in a range of demographic factors, probably from census data.
 
+-   The effect of **mailing out too early** on conversion and time-to-booking has been ignored. In practice I'd try to glean this from past data, maybe with an initial regression model with a number of different factors. Then swap that out for a Bayesian approach once mailings have begun.
+
+-   **Budgetary constraints** are not a main consideration. I assumed that the cost of mailouts was less that the cost of an empty booking spot. If we needed to balance this I'd look at a newspaper vendor model to decide how to balance costs of empty vs filled spots and how much spend is necessary to fill a spot.
+
+-   **No repeat mailings**. I haven't included the effect of repeat mailings without any data on the potential increase in conversion rates, and since we can't track address level responses for NPL.
+
+-   **No sms/email follow ups.** This was because of no initial data, in reality I'd track conversion rates and booking capacity, then implement sms/email follow if the clinics are not filling from the letters sent pre-opening. If we could see the number of people consenting but not booking, it may be easier to build into the plan earlier and reduce the size of later mailing waves.
 
 # Info provided
 
