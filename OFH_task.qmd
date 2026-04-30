@@ -522,6 +522,7 @@ wave_table
 #| lightbox: true
 #| code-fold: false
 #| echo: false
+#| column: screen-inset-shaded
 
 total_bookings |> daily_bookings_graph()
 
